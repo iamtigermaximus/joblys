@@ -1,7 +1,9 @@
+import TypeForm from './pages/type-form/TypeForm';
+
 function App() {
   return (
-    <div className="App">
-      <h1>Siegfred</h1>
+    <div>
+      <TypeForm />
     </div>
   );
 }
