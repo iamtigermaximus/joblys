@@ -1,14 +1,14 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import ButtonContainer from '../button/ButtonContainer';
 import ErrorContainer from '../error/ErrorContainer';
-import { Input, QuestionSubtitle } from './TextInput.styles';
+import { Container, Input, QuestionSubtitle } from './TextInput.styles';
 
-interface Answer {
+export interface Answer {
   id: number;
   value: string;
 }
 
-interface Question {
+export interface Question {
   id: number;
   validation?: string;
   isRequired: boolean;
@@ -17,7 +17,7 @@ interface Question {
   isLastQuestion?: boolean;
 }
 
-interface TextInputProps {
+export interface TextInputProps {
   error: string;
   answers: Answer[];
   question: Question;
@@ -27,6 +27,10 @@ interface TextInputProps {
   questionNumber: number;
   updateCurrentQuestionId: (questionId: number) => void;
   updateNextPage: () => void;
+  isRequiredQuestionAnswered: () => boolean;
+  handleShowError: (show: boolean) => void;
+  shouldScroll: boolean;
+  originalQuestionsOrder: number[];
 }
 
 const TextInput = ({
@@ -39,25 +43,47 @@ const TextInput = ({
   questionNumber,
   updateCurrentQuestionId,
   updateNextPage,
+  isRequiredQuestionAnswered,
+  handleShowError,
+  shouldScroll,
+  originalQuestionsOrder,
 }: TextInputProps) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const [shouldFocusInput, setShouldFocusInput] = useState<boolean>(false);
+  const questionIndex = originalQuestionsOrder.indexOf(question.id);
+  const calculatedQuestionNumber = questionIndex + 1;
 
-  // useEffect(() => {
-  //   if (inputRef.current) {
-  //     inputRef.current.focus();
-  //   }
-  // }, []);
+  const handleButtonClick = () => {
+    if (!isRequiredQuestionAnswered()) {
+      // If required question is not answered, show error and return
+      handleShowError(true);
+      return;
+    }
+
+    const currentAnswer = answers.find((answer) => answer.id === question.id);
+    if (!currentAnswer || currentAnswer.value.trim() === '') {
+      // If the current question is not answered, show an error and return
+      handleShowError(true); // Set a specific error message
+      return;
+    }
+
+    updateNextPage();
+    setShouldFocusInput(true); // Focus input after button click
+  };
 
   const answer = answers.find((a) => a.id === question.id) || { value: '' };
   const answerValue = answer.value;
 
+  // Focus the input when shouldFocusInput is true
+  if (shouldFocusInput && inputRef.current) {
+    inputRef.current.focus();
+    setShouldFocusInput(false); // Reset the focus flag
+  }
+
   return (
-    <div
-      className="question-container"
-      id={question.validation === 'phone' ? 'text-input' : ''}
-    >
+    <Container id={question.validation === 'phone' ? 'text-input' : ''}>
       <div className="question-number-container">
-        <span className="question-number">{questionNumber}.</span>
+        <span className="question-number">{calculatedQuestionNumber}. </span>
         {/* <div question-text htmlFor={`question-${question.id}`}> */}
         <label className="question-text" key={question.id.toString()}>
           {questionText} {question.isRequired && <span>*</span>}
@@ -89,14 +115,11 @@ const TextInput = ({
               question.isLastQuestion === true ? 'Ctrl + Enter' : 'Enter'
             }
             showPressEnter={true}
-            handleButtonClick={() => {
-              updateNextPage();
-              // updateCurrentQuestionId(question.id);
-            }}
+            handleButtonClick={handleButtonClick}
           />
         )}
       </div>
-    </div>
+    </Container>
   );
 };
 

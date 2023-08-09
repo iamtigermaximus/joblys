@@ -1,7 +1,7 @@
 import Button from './Button';
 import { ContainerButton, PressEnter } from './ButtonContainer.styles';
 
-interface ButtonContainerProps {
+export interface ButtonContainerProps {
   buttonText: string;
   showPressEnter: boolean;
   handleButtonClick: () => void;

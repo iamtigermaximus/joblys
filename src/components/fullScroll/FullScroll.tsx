@@ -6,13 +6,13 @@ import {
   FullScrollPageContent,
 } from './FullScroll.styles';
 
-interface Answer {
+export interface Answer {
   id: number;
   type: string;
   value: string;
 }
 
-interface FullScrollProps {
+export interface FullScrollProps {
   isRequiredQuestionAnswered: () => boolean;
   answers: Answer[];
   handleShowError: (show: boolean) => void;
@@ -21,7 +21,7 @@ interface FullScrollProps {
   children: React.ReactNode;
 }
 
-interface FullScrollPageProps {
+export interface FullScrollPageProps {
   children: React.ReactNode;
 }
 
@@ -45,6 +45,7 @@ function FullScroll(props: FullScrollProps) {
   } = props;
 
   const [currentPageIndex, setCurrentPageIndex] = useState(0);
+  const [shouldScroll, setShouldScroll] = useState(true);
   const pages = React.Children.toArray(props.children);
   const SCROLL_THRESHOLD = 30;
 
@@ -116,7 +117,6 @@ function FullScroll(props: FullScrollProps) {
         }
       }
     };
-
     const handleWheel = (event: React.WheelEvent<Element>) => {
       const delta = Math.sign(event.deltaY);
 
@@ -126,7 +126,12 @@ function FullScroll(props: FullScrollProps) {
       const isAtBottom =
         container.scrollHeight - container.scrollTop === container.clientHeight;
 
-      if (!isScrolling && Math.abs(event.deltaY) > SCROLL_THRESHOLD) {
+      if (
+        !isScrolling &&
+        Math.abs(event.deltaY) > SCROLL_THRESHOLD &&
+        isRequiredQuestionAnswered() && // Check if required question is answered
+        shouldScroll // Check if scrolling is allowed based on input validation
+      ) {
         if ((delta > 0 && !isAtBottom) || (delta < 0 && !isAtTop)) {
           // Prevent default scrolling behavior
           event.preventDefault();
@@ -158,25 +163,34 @@ function FullScroll(props: FullScrollProps) {
       window.removeEventListener('touchmove', handleTouchMove as any);
       window.removeEventListener('wheel', handleWheel as any);
     };
-  }, [answers, currentQuestionId, getNextIndex]);
+  }, [
+    answers,
+    currentQuestionId,
+    getNextIndex,
+    isRequiredQuestionAnswered,
+    shouldScroll,
+  ]);
 
   const containerStyle: CSSProperties = {
     transform: `translateY(-${currentPageIndex * (100 / pages.length)}%)`,
+    transition: 'transform 1.5s ease',
     scrollSnapType: 'y mandatory',
     overflowY: 'scroll',
-    scrollBehavior: 'smooth',
+    scrollBehavior: 'smooth', // Change this to 'smooth' for smoother scrolling
+    scrollMarginTop: '1px', // Optional, adds some space between pages for smoother snapping
+    transitionTimingFunction: 'cubic-bezier(0.165, 0.84, 0.44, 1)', // Add easing for smoother scroll
   };
 
   const updateNextPage = () => {
-    console.log('updateNextPage function called');
-
     // Check if the current question is answered and valid
     if (isRequiredQuestionAnswered()) {
       console.log('Collected Data:', answers);
       console.table(answers);
       checkIfLastQuestion();
       setCurrentPageIndex((prevPageIndex) => handleNextQuestion(prevPageIndex));
+      setShouldScroll(true); // Enable scrolling for the next page
     } else {
+      setShouldScroll(false); // Disable scrolling if the question is not answered
       handleShowError(true);
     }
   };

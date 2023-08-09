@@ -10,14 +10,12 @@ export const QuestionContainer = styled('div')`
 `;
 
 export const Container = styled('div')`
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  border: 1px solid white;
-  margin: 30px;
 `;
 
 export const ContainerQuestion = styled('div')`
@@ -29,16 +27,32 @@ export const ContainerQuestion = styled('div')`
 `;
 
 export const Input = styled('input')`
-  margin-top: 32px;
+  margin-top: 22px;
   color: white;
   border: none;
-  font-size: 20px;
-  padding: 0px 0px 8px;
+  // font-size: 20px;
+  // padding: 0px 0px 8px;
   border-bottom: 1px solid white;
+  // width: 400px;
+  // height: 80px;
+  padding: 15px;
   background: transparent;
   width: 400px;
-  height: 80px;
-  padding: 20px;
+
+  /* Remove border on focus */
+  &:focus {
+    outline: none;
+    border: none;
+    border-bottom: 1px solid white;
+    background: transparent;
+  }
+
+  /* Remove border on hover */
+  &:hover {
+    border: none;
+    border-bottom: 1px solid white;
+    background: transparent;
+  }
 `;
 
 export const InputContainer = styled('div')`
@@ -48,11 +62,11 @@ export const InputContainer = styled('div')`
 export const QuestionText = styled('label')`
   color: white;
   border: none;
-  font-size: 20px;
+  font-size: 30px;
   padding: 0px 0px 8px;
   border-bottom: 1px solid white;
   padding: 32px;
-  border: 1px solid green;
+  letter-spacing: 5px;
 `;
 
 export const QuestionSubtitle = styled('div')`

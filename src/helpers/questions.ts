@@ -1,10 +1,10 @@
-interface Answer {
+export interface Answer {
   id: number;
   type: string;
   value: string; // or change this to the appropriate data type based on your answers
 }
 
-interface Question {
+export interface Question {
   id: number;
   type: string;
   text: string;

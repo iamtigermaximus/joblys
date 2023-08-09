@@ -4,13 +4,13 @@ import TextInput from '../../components/textInput/TextInput';
 import FullScroll from '../../components/fullScroll/FullScroll';
 import { Container } from './TypeForm.styles';
 
-interface Answer {
+export interface Answer {
   id: number;
   type: string;
   value: string;
 }
 
-interface Question {
+export interface Question {
   id: number;
   type: string;
   text: string;
@@ -25,7 +25,7 @@ interface Question {
 }
 
 const isValidEmail = (email: string) => {
-  let validRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  const validRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
   if (email.match(validRegex)) return true;
 
   return false;
@@ -33,7 +33,7 @@ const isValidEmail = (email: string) => {
 
 const isValidPhoneNumber = (phone: string) => {
   // Match phone numbers with or without dashes or spaces
-  let validRegex = /^(\+\d{1,2}\s?)?(\d{3}[-\s]?\d{3}[-\s]?\d{4}|\d{10,})$/;
+  const validRegex = /^(\+\d{1,2}\s?)?(\d{3}[-\s]?\d{3}[-\s]?\d{4}|\d{10,})$/;
   if (phone.match(validRegex)) return true;
   return false;
 };
@@ -41,11 +41,19 @@ const isValidPhoneNumber = (phone: string) => {
 function TypeForm() {
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [showError, setShowError] = useState<boolean>(false);
-  const [error, setError] = useState<string>('Please fill this in');
+  const [error, setError] = useState<string>('');
   const [currentQuestionId, setCurrentQuestionId] = useState(1);
   const [questionNumber, setQuestionNumber] = useState(1);
   const [loading, setLoading] = useState(true);
   const [submitForm, setSubmitForm] = useState(false);
+  const [originalQuestionsOrder, setOriginalQuestionsOrder] = useState<
+    number[]
+  >([]);
+
+  useEffect(() => {
+    const order = questions.map((question) => question.id);
+    setOriginalQuestionsOrder(order);
+  }, []);
 
   const updateCurrentQuestionNumber = (
     prevQuestionNumber: number,
@@ -113,7 +121,7 @@ function TypeForm() {
     });
   };
 
-  const getCurrentQuestion = (question: Question) => {
+  const getCurrentQuestion = (question: Question, shouldScroll: boolean) => {
     const answerWithId1 = answers.find((a) => a.id === 1);
 
     let name = '';
@@ -139,6 +147,10 @@ function TypeForm() {
         questionNumber={questionNumber}
         updateCurrentQuestionId={updateCurrentQuestionId}
         updateNextPage={updateNextPage}
+        handleShowError={handleShowError}
+        isRequiredQuestionAnswered={isRequiredQuestionAnswered}
+        shouldScroll={shouldScroll}
+        originalQuestionsOrder={originalQuestionsOrder}
       />
     );
   };
@@ -213,18 +225,25 @@ function TypeForm() {
 
   const updateNextPage = () => {
     // Check if the current question is answered and valid
-    if (isRequiredQuestionAnswered()) {
-      // Logging the complete answers when the "OK" button is clicked
-      // const completeAnswers = answers.reduce((acc, answer) => {
-      //   return `${acc}${answer.value} `;
-      // }, '');
-
-      console.log('Collected Data:', answers);
-      console.table(answers);
-      checkIfLastQuestion();
-    } else {
+    if (!isRequiredQuestionAnswered()) {
+      setError('Please fill in the answer.'); // Set a specific error message
       setShowError(true);
+      return;
     }
+
+    const currentAnswer = answers.find(
+      (answer) => answer.id === currentQuestionId
+    );
+    if (!currentAnswer || currentAnswer.value.trim() === '') {
+      setError('Please fill in the answer.'); // Set a specific error message
+      setShowError(true);
+      return;
+    }
+
+    // Logging the complete answers when the "OK" button is clicked
+    console.log('Collected Data:', answers);
+    console.table(answers);
+    checkIfLastQuestion();
   };
 
   const handleSetError = (newError: string) => {
@@ -261,7 +280,17 @@ function TypeForm() {
         currentQuestionId={currentQuestionId}
       >
         {questions.map((question) => {
-          return getCurrentQuestion(question);
+          // Find the current answer for the question
+          const currentAnswer = answers.find(
+            (answer) => answer.id === question.id
+          );
+
+          // Determine if scrolling to next page/question is allowed based on whether the input is empty
+          const shouldScroll = currentAnswer
+            ? currentAnswer.value.trim() !== ''
+            : true;
+
+          return getCurrentQuestion(question, shouldScroll); // Pass shouldScroll as an argument
         })}
       </FullScroll>
     </Container>

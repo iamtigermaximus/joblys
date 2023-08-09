@@ -1,6 +1,6 @@
 import { Container, ErrorText } from './ErrorContainer.styles';
 
-interface ErrorContainerProps {
+export interface ErrorContainerProps {
   error: string;
 }
 
