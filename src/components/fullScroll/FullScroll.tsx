@@ -1,4 +1,10 @@
-import React, { useState, useEffect, CSSProperties, useRef } from 'react';
+import React, {
+  useState,
+  useEffect,
+  CSSProperties,
+  useRef,
+  useCallback,
+} from 'react';
 import {
   Container,
   FullScrollContent,
@@ -35,34 +41,42 @@ function FullScroll(props: FullScrollProps) {
   const SCROLL_THRESHOLD = 30;
   const containerRef = useRef<HTMLDivElement | null>(null);
 
-  const isQuestion = (pageIndex: number) => {
+  const isQuestion = useCallback((pageIndex: number) => {
     if (pageIndex === 0) {
       return false;
     }
     return true;
-  };
+  }, []);
 
-  const handleNextQuestion = (pageIndex: number) => {
-    // dont scroll if required not filled
-    if (isQuestion(pageIndex) && !isRequiredQuestionAnswered()) {
-      handleShowError(true);
-      return pageIndex;
-    }
+  const handleNextQuestion = useCallback(
+    (pageIndex: number) => {
+      // dont scroll if required not filled
+      if (isQuestion(pageIndex) && !isRequiredQuestionAnswered()) {
+        handleShowError(true);
+        return pageIndex;
+      }
 
-    return Math.min(pageIndex + 1, pages.length - 1);
-  };
+      return Math.min(pageIndex + 1, pages.length - 1);
+    },
+    [handleShowError, isRequiredQuestionAnswered, isQuestion, pages.length]
+  );
 
-  const handlePrevQuestion = (pageIndex: number) => {
-    handleShowError(false);
+  const handlePrevQuestion = useCallback(
+    (pageIndex: number) => {
+      handleShowError(false);
 
-    return Math.max(pageIndex - 1, 0);
-  };
-
-  const getNextIndex = (prevPageIndex: number, delta: number) => {
-    return delta > 0
-      ? handleNextQuestion(prevPageIndex)
-      : handlePrevQuestion(prevPageIndex);
-  };
+      return Math.max(pageIndex - 1, 0);
+    },
+    [handleShowError]
+  );
+  const getNextIndex = useCallback(
+    (prevPageIndex: number, delta: number) => {
+      return delta > 0
+        ? handleNextQuestion(prevPageIndex)
+        : handlePrevQuestion(prevPageIndex);
+    },
+    [handleNextQuestion, handlePrevQuestion]
+  );
 
   useEffect(() => {
     let isScrolling = false;
