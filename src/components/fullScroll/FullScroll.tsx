@@ -5,25 +5,10 @@ import {
   FullScrollPage1,
   FullScrollPageContent,
 } from './FullScroll.styles';
-
-export interface Answer {
-  id: number;
-  type: string;
-  value: string;
-}
-
-export interface FullScrollProps {
-  isRequiredQuestionAnswered: () => boolean;
-  answers: Answer[];
-  handleShowError: (show: boolean) => void;
-  checkIfLastQuestion: () => void;
-  currentQuestionId: number;
-  children: React.ReactNode;
-}
-
-export interface FullScrollPageProps {
-  children: React.ReactNode;
-}
+import {
+  FullScrollPageProps,
+  FullScrollProps,
+} from '../../interface/fullScrollInterface';
 
 //For individual pages
 const FullScrollPage = (props: FullScrollPageProps) => {

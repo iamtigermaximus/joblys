@@ -4,26 +4,7 @@ import TextInput from '../../components/textInput/TextInput';
 import FullScroll from '../../components/fullScroll/FullScroll';
 import { Container } from './TypeForm.styles';
 import { isValidEmail, isValidPhoneNumber } from '../../helpers/validation';
-
-export interface Answer {
-  id: number;
-  type: string;
-  value: string;
-}
-
-export interface Question {
-  id: number;
-  type: string;
-  text: string;
-  isRequired: boolean;
-  subTitle?: string;
-  options?: string[];
-  condition?(answers: Answer[]): boolean;
-  maxSelect?: number;
-  placeholder?: string;
-  validation?: string;
-  isLastQuestion?: boolean;
-}
+import { Answer, Question } from '../../interface/typeFormInterface';
 
 function TypeForm() {
   const [answers, setAnswers] = useState<Answer[]>([]);
