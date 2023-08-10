@@ -3,6 +3,7 @@ import { questions } from '../../helpers/questions';
 import TextInput from '../../components/textInput/TextInput';
 import FullScroll from '../../components/fullScroll/FullScroll';
 import { Container } from './TypeForm.styles';
+import { isValidEmail, isValidPhoneNumber } from '../../helpers/validation';
 
 export interface Answer {
   id: number;
@@ -23,20 +24,6 @@ export interface Question {
   validation?: string;
   isLastQuestion?: boolean;
 }
-
-const isValidEmail = (email: string) => {
-  const validRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
-  if (email.match(validRegex)) return true;
-
-  return false;
-};
-
-const isValidPhoneNumber = (phone: string) => {
-  // Match phone numbers with or without dashes or spaces
-  const validRegex = /^(\+\d{1,2}\s?)?(\d{3}[-\s]?\d{3}[-\s]?\d{4}|\d{10,})$/;
-  if (phone.match(validRegex)) return true;
-  return false;
-};
 
 function TypeForm() {
   const [answers, setAnswers] = useState<Answer[]>([]);
