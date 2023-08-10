@@ -62,16 +62,16 @@ export const InputContainer = styled('div')`
 export const QuestionText = styled('label')`
   color: white;
   border: none;
-  font-size: 30px;
+  font-size: 20px;
   padding: 0px 0px 8px;
-  border-bottom: 1px solid white;
   padding: 32px;
-  letter-spacing: 5px;
+  letter-spacing: 1px;
 `;
 
-export const QuestionSubtitle = styled('div')`
-  font-size: 20px;
+export const QuestionSubtitle = styled('h1')`
+  font-size: 12px;
   line-height: 28px;
   color: rgba(255, 255, 255, 0.7);
   margin-top: 8px;
+  letter-spacing: 1px;
 `;

@@ -93,10 +93,10 @@ function TypeForm() {
       if (phoneElement) {
         phoneElement.classList.add('shake');
         setError('Numbers only please');
-        setShowError(true);
+        handleShowError(true);
         setTimeout(() => {
           phoneElement.classList.remove('shake');
-          setShowError(false);
+          handleShowError(false);
         }, 800);
       }
       return;
@@ -204,7 +204,10 @@ function TypeForm() {
         return false;
       }
 
-      if (currentQuestion.validation === 'phone') {
+      if (
+        currentQuestion.validation === 'phone' &&
+        currentQuestion.type === 'phone'
+      ) {
         if (isValidPhoneNumber(currentAnswer.value)) {
           return true;
         }
@@ -241,8 +244,8 @@ function TypeForm() {
     }
 
     // Logging the complete answers when the "OK" button is clicked
-    console.log('Collected Data:', answers);
-    console.table(answers);
+    // console.log('Collected Data:', answers);
+    // console.table(answers);
     checkIfLastQuestion();
   };
 

@@ -33,7 +33,7 @@ export const questions: Question[] = [
   },
   {
     id: 3,
-    type: 'text',
+    type: 'phone',
     text: 'Would you like to add a phone number to your resume?',
     isRequired: true,
     subTitle: 'Only provided to employers you apply',

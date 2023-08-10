@@ -1,4 +1,4 @@
-import React, { useState, useEffect, CSSProperties } from 'react';
+import React, { useState, useEffect, CSSProperties, useRef } from 'react';
 import {
   Container,
   FullScrollContent,
@@ -48,6 +48,7 @@ function FullScroll(props: FullScrollProps) {
   const [shouldScroll, setShouldScroll] = useState(true);
   const pages = React.Children.toArray(props.children);
   const SCROLL_THRESHOLD = 30;
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   const isQuestion = (pageIndex: number) => {
     if (pageIndex === 0) {
@@ -113,7 +114,7 @@ function FullScroll(props: FullScrollProps) {
 
           setTimeout(() => {
             isScrolling = false;
-          }, 1000);
+          }, 2000);
         }
       }
     };
@@ -149,7 +150,7 @@ function FullScroll(props: FullScrollProps) {
 
           setTimeout(() => {
             isScrolling = false;
-          }, 1000);
+          }, 2000);
         }
       }
     };
@@ -173,12 +174,12 @@ function FullScroll(props: FullScrollProps) {
 
   const containerStyle: CSSProperties = {
     transform: `translateY(-${currentPageIndex * (100 / pages.length)}%)`,
-    transition: 'transform 1.5s ease',
+    transition: 'transform 1s ease',
     scrollSnapType: 'y mandatory',
     overflowY: 'scroll',
     scrollBehavior: 'smooth', // Change this to 'smooth' for smoother scrolling
     scrollMarginTop: '1px', // Optional, adds some space between pages for smoother snapping
-    transitionTimingFunction: 'cubic-bezier(0.165, 0.84, 0.44, 1)', // Add easing for smoother scroll
+    transitionTimingFunction: 'cubic-bezier(0.33, 0.66, 0.66, 1)',
   };
 
   const updateNextPage = () => {
@@ -225,7 +226,7 @@ function FullScroll(props: FullScrollProps) {
     return children.map((childElement) => addPropsToReactElement(childElement));
   }
   return (
-    <Container tabIndex={0} onKeyDown={handleKeyDown}>
+    <Container tabIndex={0} onKeyDown={handleKeyDown} ref={containerRef}>
       <FullScrollContent style={containerStyle}>
         {pages.map((page, index) => (
           <FullScrollPage key={index}>

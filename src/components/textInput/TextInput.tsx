@@ -1,7 +1,12 @@
 import { useRef, useState } from 'react';
 import ButtonContainer from '../button/ButtonContainer';
 import ErrorContainer from '../error/ErrorContainer';
-import { Container, Input, QuestionSubtitle } from './TextInput.styles';
+import {
+  Container,
+  Input,
+  QuestionSubtitle,
+  QuestionText,
+} from './TextInput.styles';
 
 export interface Answer {
   id: number;
@@ -83,11 +88,11 @@ const TextInput = ({
   return (
     <Container id={question.validation === 'phone' ? 'text-input' : ''}>
       <div className="question-number-container">
-        <span className="question-number">{calculatedQuestionNumber}. </span>
+        <span className="question-number">{calculatedQuestionNumber}.</span>
         {/* <div question-text htmlFor={`question-${question.id}`}> */}
-        <label className="question-text" key={question.id.toString()}>
+        <QuestionText key={question.id.toString()}>
           {questionText} {question.isRequired && <span>*</span>}
-        </label>
+        </QuestionText>
       </div>
       <QuestionSubtitle>
         <span>{question.subTitle}</span>
