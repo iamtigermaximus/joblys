@@ -23,6 +23,7 @@ const TextInput = ({
   handleShowError,
   shouldScroll,
   originalQuestionsOrder,
+  handleSubmit,
 }: TextInputProps) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [shouldFocusInput, setShouldFocusInput] = useState<boolean>(false);
@@ -44,7 +45,8 @@ const TextInput = ({
     }
 
     updateNextPage();
-    setShouldFocusInput(true); // Focus input after button click
+    handleSubmit();
+    setShouldFocusInput(true);
   };
 
   const answer = answers.find((a) => a.id === question.id) || { value: '' };

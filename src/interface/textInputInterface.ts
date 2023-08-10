@@ -27,4 +27,6 @@ export interface TextInputProps {
   handleShowError: (show: boolean) => void;
   shouldScroll: boolean;
   originalQuestionsOrder: number[];
+
+  handleSubmit: () => void;
 }

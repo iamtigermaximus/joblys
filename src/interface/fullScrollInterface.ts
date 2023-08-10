@@ -11,6 +11,7 @@ export interface FullScrollProps {
   checkIfLastQuestion: () => void;
   currentQuestionId: number;
   children: React.ReactNode;
+  handleSubmit: () => void;
 }
 
 export interface FullScrollPageProps {

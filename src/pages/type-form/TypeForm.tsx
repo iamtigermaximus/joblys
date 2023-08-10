@@ -119,6 +119,7 @@ function TypeForm() {
         isRequiredQuestionAnswered={isRequiredQuestionAnswered}
         shouldScroll={shouldScroll}
         originalQuestionsOrder={originalQuestionsOrder}
+        handleSubmit={handleSubmit}
       />
     );
   };
@@ -235,12 +236,14 @@ function TypeForm() {
     return <h1>Loading...</h1>;
   }
 
-  if (submitForm) {
-    console.log('Collected Data:', answers);
-    console.table(answers);
+  const handleSubmit = () => {
+    if (submitForm) {
+      console.log('Collected Data:', answers);
+      console.table(answers);
 
-    return <h1>Complete</h1>;
-  }
+      return <h1>Form Completed</h1>;
+    }
+  };
   return (
     <Container>
       <FullScroll
@@ -249,6 +252,7 @@ function TypeForm() {
         handleShowError={handleShowError}
         checkIfLastQuestion={checkIfLastQuestion}
         currentQuestionId={currentQuestionId}
+        handleSubmit={handleSubmit}
       >
         {questions.map((question) => {
           // Find the current answer for the question
@@ -263,7 +267,29 @@ function TypeForm() {
 
           return getCurrentQuestion(question, shouldScroll); // Pass shouldScroll as an argument
         })}
+        <div>
+          <h2>Collected Data:</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Question ID</th>
+                <th>Type</th>
+                <th>Answer</th>
+              </tr>
+            </thead>
+            <tbody>
+              {answers.map((answer) => (
+                <tr key={answer.id}>
+                  <td>{answer.id}</td>
+                  <td>{answer.type}</td>
+                  <td>{answer.value}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </FullScroll>
+      {handleSubmit()}
     </Container>
   );
 }
